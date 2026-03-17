@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Timey - Schedule App</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Left Sidebar -->
+        <aside class="sidebar-left">
+            <div class="logo">
+                <div class="logo-icon"><i class="ri-book-read-line"></i></div>
+                <h2>Timey</h2>
+            </div>
+
+            <div class="weekly-pinned">
+                <div class="section-header">
+                    <h3>Pinned Agenda</h3>
+                </div>
+                <div id="pinned-list" class="pinned-list">
+                    <!-- Agenda items will be injected here -->
+                </div>
+                <button id="add-agenda-btn" class="add-btn">
+                    <i class="ri-add-line"></i> Add Pin & Agenda
+                </button>
+            </div>
+
+            <div class="mini-calendar">
+                <div class="calendar-header">
+                    <h3 id="current-month-year">March 2026</h3>
+                    <div class="calendar-nav">
+                        <button id="prev-month"><i class="ri-arrow-left-s-line"></i></button>
+                        <button id="next-month"><i class="ri-arrow-right-s-line"></i></button>
+                    </div>
+                </div>
+                <div class="calendar-days-header">
+                    <span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span>
+                </div>
+                <div id="calendar-grid" class="calendar-grid">
+                    <!-- Dates will be injected here -->
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="schedule-header">
+                <div>
+                    <h1 id="schedule-title">Today's Schedule</h1>
+                    <div class="date-navigator">
+                        <h2 id="selected-date-display">Monday, March 2</h2>
+                        <div class="nav-arrows">
+                            <button id="prev-day"><i class="ri-arrow-left-s-line"></i></button>
+                            <button id="next-day"><i class="ri-arrow-right-s-line"></i></button>
+                        </div>
+                        <button class="btn-today hidden" id="btn-today">Back to Today</button>
+                    </div>
+                </div>
+                <button class="add-quick-btn" title="Add Event" id="add-event-btn"><i class="ri-calendar-event-line"></i></button>
+            </div>
+
+            <div class="schedule-timeline">
+                <div id="status-banner" class="status-banner hidden">
+                    <!-- Status like "Libur", "UTS" akan muncul di sini -->
+                </div>
+                <div id="schedule-list" class="schedule-list">
+                    <!-- Class cards will be injected here -->
+                </div>
+            </div>
+        </main>
+
+        <!-- Right Sidebar -->
+        <aside class="sidebar-right">
+            <div class="user-profile">
+                <div class="user-info">
+                    <h3>IF-C Student</h3>
+                    <p>Evening - Mikroskil</p>
+                </div>
+                <img src="https://ui-avatars.com/api/?name=IF&background=FFD166&color=111&size=128" alt="Profile" class="avatar">
+            </div>
+
+            <div class="widget weather-widget">
+                <div class="time-display">
+                    <h2 id="current-time" class="time-abstract">00:00</h2>
+                </div>
+                <p class="weather-text"><i class="ri-sun-cloudy-line"></i> Have a great day!</p>
+            </div>
+
+            <div class="widget illustration-widget">
+                <h3>Keep it up!</h3>
+                <p>Don't forget to submit assignments and get enough rest. Happy studying!</p>
+                <div class="illust-circle">
+                    <i class="ri-rocket-2-line"></i>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- Modal Form untuk Agenda -->
+    <div id="agenda-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add Agenda / Pin</h2>
+                <button id="close-modal" class="close-btn"><i class="ri-close-line"></i></button>
+            </div>
+            <form id="agenda-form">
+                <div class="form-group">
+                    <label for="agenda-title">Activity / Note</label>
+                    <input type="text" id="agenda-title" required placeholder="e.g., Submit Web Task / Buy Pens">
+                </div>
+                <div class="form-group">
+                    <label for="agenda-date">Date (Leave empty to pin permanently)</label>
+                    <input type="date" id="agenda-date">
+                </div>
+                <div class="form-group">
+                    <label for="agenda-time">Time (Optional)</label>
+                    <input type="time" id="agenda-time">
+                </div>
+                <button type="submit" class="submit-btn">Save</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Data Jadwal (Loaded directly to prevent CORS if opened locally) -->
+    <script src="data/scheduleData.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
