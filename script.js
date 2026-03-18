@@ -2,10 +2,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     // === State & Global Variables ===
     let scheduleData = null;
     
-    // Default today logic - Based on current real-time environment (2026-03-17)
-    const today = new Date('2026-03-17T00:00:00'); // Force setting "today" based on environment metadata to ensure simulation logic works exactly as requested. Otherwise user browser time might differ.
-    // In production, we would just use new Date(), but we lock it to the simulation time to match "minggu pertama" logic correctly for the fake 2026-03-02 schedule.
-    // Replace with this for fully dynamic production: const today = new Date();
+    // Default today logic - Uses real browser time dynamically
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // normalize to midnight for date comparison
     
     let selectedDate = new Date(today);
     
@@ -214,17 +213,13 @@ document.addEventListener('DOMContentLoaded', async () => {
                     card.innerHTML = `
                         <div class="class-info">
                             <div class="class-icon"><i class="${icon}"></i></div>
-                            <div class="class-details">
-                                <h3>${item.subject}</h3>
-                                <div class="class-meta">
-                                    <span><i class="ri-user-smile-line"></i> ${item.lecturer}</span>
-                                    <span><i class="ri-map-pin-line"></i> ${item.room}</span>
-                                </div>
+                            <div class="class-body">
+                                <span class="class-subject">${item.subject}</span>
+                                <div class="class-time"><span class="time">${item.time}</span></div>
+                                <div class="class-lecturer"><i class="ri-user-smile-line"></i><span>${item.lecturer}</span></div>
+                                <div class="class-room"><i class="ri-map-pin-line"></i>${item.room}</div>
+                                <span class="class-status ${statClass}">${statText}</span>
                             </div>
-                        </div>
-                        <div class="class-time">
-                            <span class="time">${item.time}</span>
-                            <span class="class-status ${statClass}">${statText}</span>
                         </div>
                     `;
                 } else if (item.itemType === 'event') {
@@ -232,16 +227,13 @@ document.addEventListener('DOMContentLoaded', async () => {
                     card.innerHTML = `
                         <div class="class-info">
                             <div class="class-icon"><i class="ri-calendar-todo-line"></i></div>
-                            <div class="class-details">
-                                <h3>${item.title}</h3>
-                                <div class="class-meta">
-                                    <span><i class="ri-pushpin-2-line"></i> Custom Event</span>
-                                </div>
+                            <div class="class-body">
+                                <span class="class-subject">${item.title}</span>
+                                <div class="class-time"><span class="time">${timeText}</span></div>
+                                <div class="class-lecturer"><i class="ri-pushpin-2-line"></i><span>Custom Event</span></div>
+                                <div class="class-room"></div>
+                                <span class="class-status status-event">Event</span>
                             </div>
-                        </div>
-                        <div class="class-time">
-                            <span class="time">${timeText}</span>
-                            <span class="class-status status-event">Event</span>
                         </div>
                         <button class="delete-event-btn" data-id="${item.id}" title="Delete event"><i class="ri-close-line"></i></button>
                     `;
