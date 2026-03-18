@@ -399,7 +399,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         const now = new Date();
         const hours = String(now.getHours()).padStart(2, '0');
         const minutes = String(now.getMinutes()).padStart(2, '0');
-        document.getElementById('current-time').textContent = `${hours}:${minutes}`;
+        const seconds = String(now.getSeconds()).padStart(2, '0');
+        document.getElementById('current-time').textContent = `${hours}:${minutes}:${seconds}`;
     }, 1000);
 
     // Bootstrap
