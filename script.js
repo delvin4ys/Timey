@@ -1,18 +1,14 @@
 document.addEventListener('DOMContentLoaded', async () => {
-    // === State & Global Variables ===
     let scheduleData = null;
     
-    // Default today logic - Uses real browser time dynamically
     const today = new Date();
-    today.setHours(0, 0, 0, 0); // normalize to midnight for date comparison
+    today.setHours(0, 0, 0, 0);
     
     let selectedDate = new Date(today);
 
-    // Filters (from UI)
     let searchQuery = '';
     let onlineOnly = false;
     
-    // === Selectors ===
     const calendarGrid = document.getElementById('calendar-grid');
     const currentMonthYear = document.getElementById('current-month-year');
     const prevMonthBtn = document.getElementById('prev-month');
@@ -41,7 +37,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     const closeModal = document.getElementById('close-modal');
     const agendaForm = document.getElementById('agenda-form');
     
-    // === Color themes for classes ===
     const colors = ['color-1', 'color-2', 'color-3', 'color-4', 'color-5'];
 
     function syncScheduleControls() {
@@ -49,7 +44,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (onlineOnlyCheckbox) onlineOnly = !!onlineOnlyCheckbox.checked;
     }
 
-    // === Event listeners (search + filters) ===
     if (scheduleSearchInput) {
         scheduleSearchInput.addEventListener('input', () => {
             searchQuery = scheduleSearchInput.value.trim().toLowerCase();
@@ -77,7 +71,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     }
     
-    // === Load Data ===
     scheduleData = typeof staticScheduleData !== 'undefined' ? staticScheduleData : null;
     
     if (!scheduleData) {
@@ -85,11 +78,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         return;
     }
 
-    // Initialize Calendar state
     let currentMonth = selectedDate.getMonth();
     let currentYear = selectedDate.getFullYear();
     
-    // === Functions ===
     function formatStrDate(dateObj) {
         const year = dateObj.getFullYear();
         const month = String(dateObj.getMonth() + 1).padStart(2, '0');
@@ -117,7 +108,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         const monthNamesShort = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
         const dayNamesShort = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
         
-        // Blank spaces for offset (Sunday is 0)
         for (let i = 0; i < firstDay; i++) {
             const emptyDiv = document.createElement('div');
             emptyDiv.className = 'cal-day empty';
@@ -139,9 +129,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                 dayDiv.classList.add('selected');
             }
 
-            // Highlight dates based on current filters:
-            // - Online Only: highlight dates whose class schedule is "Online" (or contains Zoom room)
-            // - Search: highlight dates where any class matches query in subject or lecturer
             const { status, classes } = getScheduleForDate(cellDate);
             const dayIsOnline = status === "Online";
             const dayMatchesSearch = qActive
@@ -178,7 +165,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             calendarGrid.appendChild(dayDiv);
         }
 
-        // Update main filter panel (below search + online only)
         if (filterHitsPanel && filterHitsPills) {
             if (onlineActive || qActive) {
                 filterHitsPanel.classList.remove('hidden');
@@ -187,7 +173,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                 if (matchedHitDates.length === 0) {
                     filterHitsPills.innerHTML = `<div class="filter-hits-empty">No matching dates in this month</div>`;
                 } else {
-                    // Keep unique dates (should already be unique, but safe)
                     const seen = new Set();
                     matchedHitDates.forEach((d) => {
                         if (seen.has(d.strDate)) return;
@@ -222,14 +207,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         let status = "Offline"; 
         let classes = [];
 
-        // Check if date is within semester range
         const start = new Date(scheduleData.startDate + 'T00:00:00');
         const end = new Date(scheduleData.endDate + 'T00:00:00');
         if (dateObj < start || dateObj > end) {
             return { status: "No Semester", classes: [] };
         }
         
-        // Check exact match override
         if (scheduleData.overrides && scheduleData.overrides[strDate]) {
             const override = scheduleData.overrides[strDate];
             status = override.status;
@@ -237,7 +220,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             return { status, classes };
         }
         
-        // Use default weekly
         const engDays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
         const dayName = engDays[dateObj.getDay()];
         
@@ -267,7 +249,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         
         const { status, classes } = getScheduleForDate(selectedDate);
         
-        // Status Banner Rendering
         if (status === "No Semester") {
             statusBanner.className = 'status-banner status-minggu-tenang';
             statusBanner.innerHTML = `<i class="ri-calendar-close-line"></i> Outside semester period. No classes scheduled.`;
@@ -289,7 +270,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             statusBanner.classList.add('hidden');
         }
         
-        // Schedule Rendering
         scheduleList.innerHTML = '';
         
         let mergedItems = [];
@@ -301,18 +281,16 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         const originalItemsCount = mergedItems.length;
         
-        // Sort items by time (events without time will be pushed to the top "00:00")
         mergedItems.sort((a, b) => {
             const timeA = (a.time) ? a.time.split(' ')[0] : '00:00';
             const timeB = (b.time) ? b.time.split(' ')[0] : '00:00';
             return timeA.localeCompare(timeB);
         });
 
-        // Apply search + filters
         const q = (searchQuery || '').trim();
         if (q.length > 0) {
             mergedItems = mergedItems.filter((item) => {
-                if (item.itemType !== 'class') return false; // search hanya untuk lecturer & subject
+                if (item.itemType !== 'class') return false;
                 const subject = String(item.subject || '').toLowerCase();
                 const lecturer = String(item.lecturer || '').toLowerCase();
                 return subject.includes(q) || lecturer.includes(q);
@@ -399,7 +377,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     }
     
-    // === Local Storage Agenda Logic ===
     function getAgendas() {
         return JSON.parse(localStorage.getItem('jadwal_agenda') || '[]');
     }
@@ -407,20 +384,19 @@ document.addEventListener('DOMContentLoaded', async () => {
     function saveAgendas(agendas) {
         localStorage.setItem('jadwal_agenda', JSON.stringify(agendas));
         renderAgendas();
-        renderCalendar(currentMonth, currentYear); // refresh dot kalender
+        renderCalendar(currentMonth, currentYear);
     }
     
     function renderAgendas() {
         const rawAgendas = getAgendas();
         const selectedDateStr = formatStrDate(selectedDate);
         
-        // Filter: only show if no date OR date matches selectedDate
         const agendas = rawAgendas.filter(a => !a.date || a.date === selectedDateStr);
         
         pinnedList.innerHTML = '';
         
         if(agendas.length === 0) {
-            pinnedList.innerHTML = '<p style="font-size:0.85rem; color:var(--text-muted); text-align:center;">No agenda yet</p>';
+            pinnedList.innerHTML = '<p style="font-size:0.8rem; color:var(--text-muted); text-align:center; margin:33px auto;">No agenda yet</p>';
             return;
         }
         
@@ -429,7 +405,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             const isBSelected = b.date === formatStrDate(selectedDate);
             if(isASelected && !isBSelected) return -1;
             if(!isASelected && isBSelected) return 1;
-            return b.id - a.id; // descending if both equal
+            return b.id - a.id;
         });
 
         agendas.forEach((agenda, index) => {
@@ -463,7 +439,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     }
 
-    // === Event Listeners ===
     function openModal() {
         agendaModal.classList.remove('hidden');
         document.getElementById('agenda-date').value = formatStrDate(selectedDate);
@@ -486,7 +461,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     agendaForm.addEventListener('submit', (e) => {
         e.preventDefault();
         const title = document.getElementById('agenda-title').value;
-        const date = document.getElementById('agenda-date').value; // bisa empty jika "Pin/Permanen"
+        const date = document.getElementById('agenda-date').value;
         const time = document.getElementById('agenda-time').value;
         
         const agendas = getAgendas();
@@ -541,7 +516,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         renderAgendas();
     });
 
-    // Clock Tick
     setInterval(() => {
         const now = new Date();
         const hours = String(now.getHours()).padStart(2, '0');
@@ -550,7 +524,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById('current-time').textContent = `${hours}:${minutes}:${seconds}`;
     }, 1000);
 
-    // Bootstrap
     renderCalendar(currentMonth, currentYear);
     syncScheduleControls();
     updateScheduleView();
