@@ -396,7 +396,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         pinnedList.innerHTML = '';
         
         if(agendas.length === 0) {
-            pinnedList.innerHTML = '<p style="font-size:0.8rem; color:var(--text-muted); text-align:center; margin:33px auto;">No agenda yet</p>';
+            pinnedList.innerHTML = '<p style="font-size:0.8rem; color:var(--text-muted); text-align:center; margin:15px auto;">No agenda yet</p>';
             return;
         }
         
