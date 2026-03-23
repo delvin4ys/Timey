@@ -1,4 +1,42 @@
+(function initTheme() {
+    const THEME_KEY = 'timey-theme';
+    let saved = null;
+    try {
+        saved = localStorage.getItem(THEME_KEY);
+    } catch (_) {}
+    const theme = saved === 'light' || saved === 'dark' ? saved : 'dark';
+    document.documentElement.setAttribute('data-theme', theme);
+})();
+
 document.addEventListener('DOMContentLoaded', async () => {
+    const THEME_KEY = 'timey-theme';
+    const profileAvatar = document.querySelector('.avatar');
+
+    function updateProfileAvatar(theme) {
+        if (!profileAvatar) return;
+        const background = theme === 'light' ? 'ffffff' : '1a2332';
+        profileAvatar.src = `https://ui-avatars.com/api/?name=IF&background=${background}&color=2F80FF&size=128`;
+    }
+
+    function applyTheme(next) {
+        const t = next === 'light' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', t);
+        updateProfileAvatar(t);
+        try {
+            localStorage.setItem(THEME_KEY, t);
+        } catch (_) {}
+    }
+
+    updateProfileAvatar(document.documentElement.getAttribute('data-theme') || 'dark');
+
+    const themeToggle = document.getElementById('theme-toggle');
+    if (themeToggle) {
+        themeToggle.addEventListener('click', () => {
+            const cur = document.documentElement.getAttribute('data-theme') || 'dark';
+            applyTheme(cur === 'dark' ? 'light' : 'dark');
+        });
+    }
+
     let scheduleData = null;
     
     const today = new Date();
@@ -420,13 +458,13 @@ document.addEventListener('DOMContentLoaded', async () => {
             const card = document.createElement('div');
             card.className = 'agenda-card';
             card.innerHTML = `
-                <div class="agenda-icon" style="${isSelectedDate ? 'color:#fff; background:var(--accent-peach);' : ''}"><i class="ri-pushpin-2-fill"></i></div>
+                <div class="agenda-icon" style="${isSelectedDate ? 'color:var(--text-on-accent); background:var(--accent-peach);' : ''}"><i class="ri-pushpin-2-fill"></i></div>
                 <div class="agenda-content" style="flex-grow:1;">
                     <h4>${agenda.title}</h4>
                     <p>${dateText}</p>
                     ${isSelectedDate ? '<span class="badge">Today\'s Date</span>' : ''}
                 </div>
-                <button class="delete-btn" data-id="${agenda.id}" style="background:none; border:none; color:#EF476F; cursor:pointer;" title="Delete"><i class="ri-delete-bin-line"></i></button>
+                <button class="delete-btn" data-id="${agenda.id}" style="background:none; border:none; color:var(--text-muted); cursor:pointer;" title="Delete"><i class="ri-delete-bin-line"></i></button>
             `;
             
             card.querySelector('.delete-btn').addEventListener('click', (e) => {

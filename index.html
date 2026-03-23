@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -63,7 +63,13 @@
                         <button class="btn-today hidden" id="btn-today">Back to Today</button>
                     </div>
                 </div>
-                <button class="add-quick-btn" title="Add Event" id="add-event-btn"><i class="ri-calendar-event-line"></i></button>
+                <div class="header-actions">
+                    <button type="button" class="theme-toggle" id="theme-toggle" title="Toggle theme" aria-label="Toggle light or dark theme">
+                        <i class="ri-moon-line theme-icon-moon" aria-hidden="true"></i>
+                        <i class="ri-sun-line theme-icon-sun" aria-hidden="true"></i>
+                    </button>
+                    <button class="add-quick-btn" title="Add Event" id="add-event-btn"><i class="ri-calendar-event-line"></i></button>
+                </div>
             </div>
 
             <div class="schedule-controls">
@@ -104,7 +110,7 @@
                     <h3>IF-C</h3>
                     <p>Evening - Mikroskil</p>
                 </div>
-                <img src="https://ui-avatars.com/api/?name=IF&background=FFFFFF&color=2F80FF&size=128" alt="Profile" class="avatar">
+                <img src="https://ui-avatars.com/api/?name=IF&background=ffffff&color=2F80FF&size=128" alt="Profile" class="avatar">
             </div>
 
             <div class="widget weather-widget">
@@ -147,13 +153,6 @@
                 <button type="submit" class="submit-btn">Save</button>
             </form>
         </div>
-    </div>
-
-    <!-- Decorative rockets (lightweight, behind UI) -->
-    <div class="rocket-bg" aria-hidden="true">
-        <i class="ri-rocket-2-line rocket rocket-1"></i>
-        <i class="ri-rocket-2-line rocket rocket-2"></i>
-        <i class="ri-rocket-2-line rocket rocket-3"></i>
     </div>
 
     <!-- Data Jadwal (Loaded directly to prevent CORS if opened locally) -->
