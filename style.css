@@ -982,7 +982,7 @@ html[data-theme="light"] body::after {
 .filter-hits-empty {
     padding: 5px;
     color: var(--text-muted);
-    font-weight: 600;
+    font-weight: 400;
 }
 
 .status-banner {
