@@ -269,13 +269,11 @@ body::after {
     content: '';
     position: absolute;
     inset: -2px;
-    background: linear-gradient(
-        115deg,
-        transparent 0%,
-        rgba(47, 128, 255, 0.20) 38%,
-        rgba(106, 183, 255, 0.14) 54%,
-        transparent 72%
-    );
+    background: linear-gradient(115deg,
+            transparent 0%,
+            rgba(47, 128, 255, 0.20) 38%,
+            rgba(106, 183, 255, 0.14) 54%,
+            transparent 72%);
     transform: translateX(-140%);
     opacity: 0;
     transition: opacity 0.18s ease, transform 0.75s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -592,10 +590,12 @@ body::after {
         transform: scale(0.95);
         opacity: 0.75;
     }
+
     50% {
         transform: scale(1.25);
         opacity: 1;
     }
+
     100% {
         transform: scale(0.95);
         opacity: 0.75;
@@ -825,13 +825,11 @@ html[data-theme="light"] body::after {
     content: '';
     position: absolute;
     inset: -2px;
-    background: linear-gradient(
-        115deg,
-        transparent 0%,
-        rgba(47, 128, 255, 0.24) 38%,
-        rgba(106, 183, 255, 0.14) 54%,
-        transparent 72%
-    );
+    background: linear-gradient(115deg,
+            transparent 0%,
+            rgba(47, 128, 255, 0.24) 38%,
+            rgba(106, 183, 255, 0.14) 54%,
+            transparent 72%);
     transform: translateX(-140%);
     opacity: 0;
     pointer-events: none;
@@ -858,9 +856,11 @@ html[data-theme="light"] body::after {
     0% {
         transform: translateX(-140%);
     }
+
     50% {
         transform: translateX(20%);
     }
+
     100% {
         transform: translateX(140%);
     }
@@ -980,10 +980,9 @@ html[data-theme="light"] body::after {
 }
 
 .filter-hits-empty {
-    padding: 10px 12px;
+    padding: 5px;
     color: var(--text-muted);
-    font-weight: 800;
-    letter-spacing: 0.2px;
+    font-weight: 600;
 }
 
 .status-banner {
@@ -1056,14 +1055,12 @@ html[data-theme="light"] body::after {
     bottom: 10px;
     width: 4px;
     pointer-events: none;
-    background: linear-gradient(
-        to bottom,
-        rgba(47, 128, 255, 0.0),
-        rgba(47, 128, 255, 0.42),
-        rgba(106, 183, 255, 0.22),
-        rgba(47, 128, 255, 0.16),
-        rgba(47, 128, 255, 0.0)
-    );
+    background: linear-gradient(to bottom,
+            rgba(47, 128, 255, 0.0),
+            rgba(47, 128, 255, 0.42),
+            rgba(106, 183, 255, 0.22),
+            rgba(47, 128, 255, 0.16),
+            rgba(47, 128, 255, 0.0));
     opacity: 0.3;
     animation: timelinePulse 3.8s ease-in-out infinite;
     z-index: 1;
@@ -1108,13 +1105,11 @@ html[data-theme="light"] body::after {
     content: '';
     position: absolute;
     inset: -2px;
-    background: linear-gradient(
-        115deg,
-        transparent 0%,
-        rgba(47, 128, 255, 0.22) 36%,
-        rgba(106, 183, 255, 0.14) 54%,
-        transparent 72%
-    );
+    background: linear-gradient(115deg,
+            transparent 0%,
+            rgba(47, 128, 255, 0.22) 36%,
+            rgba(106, 183, 255, 0.14) 54%,
+            transparent 72%);
     transform: translateX(-140%);
     opacity: 0;
     transition: opacity 0.18s ease, transform 0.75s cubic-bezier(0.175, 0.885, 0.32, 1.275);
