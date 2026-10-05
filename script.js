@@ -3,7 +3,7 @@
     let saved = null;
     try {
         saved = localStorage.getItem(THEME_KEY);
-    } catch (_) {}
+    } catch (_) { }
     const theme = saved === 'light' || saved === 'dark' ? saved : 'dark';
     document.documentElement.setAttribute('data-theme', theme);
 })();
@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         updateProfileAvatar(t);
         try {
             localStorage.setItem(THEME_KEY, t);
-        } catch (_) {}
+        } catch (_) { }
     }
 
     updateProfileAvatar(document.documentElement.getAttribute('data-theme') || 'dark');
@@ -38,20 +38,20 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     let scheduleData = null;
-    
+
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-    
+
     let selectedDate = new Date(today);
 
     let searchQuery = '';
     let onlineOnly = false;
-    
+
     const calendarGrid = document.getElementById('calendar-grid');
     const currentMonthYear = document.getElementById('current-month-year');
     const prevMonthBtn = document.getElementById('prev-month');
     const nextMonthBtn = document.getElementById('next-month');
-    
+
     const selectedDateDisplay = document.getElementById('selected-date-display');
     const scheduleTitle = document.getElementById('schedule-title');
     const prevDayBtn = document.getElementById('prev-day');
@@ -64,17 +64,17 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const filterHitsPanel = document.getElementById('filter-hits');
     const filterHitsPills = document.getElementById('filter-hits-pills');
-    
+
     const scheduleList = document.getElementById('schedule-list');
     const statusBanner = document.getElementById('status-banner');
-    
+
     const pinnedList = document.getElementById('pinned-list');
     const addAgendaBtn = document.getElementById('add-agenda-btn');
     const addQuickBtn = document.querySelector('.add-quick-btn');
     const agendaModal = document.getElementById('agenda-modal');
     const closeModal = document.getElementById('close-modal');
     const agendaForm = document.getElementById('agenda-form');
-    
+
     const colors = ['color-1', 'color-2', 'color-3', 'color-4', 'color-5'];
 
     function syncScheduleControls() {
@@ -108,9 +108,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             updateScheduleView();
         });
     }
-    
+
     scheduleData = typeof staticScheduleData !== 'undefined' ? staticScheduleData : null;
-    
+
     if (!scheduleData) {
         scheduleList.innerHTML = `<div class="no-schedule"><i class="ri-error-warning-line"></i><h3>Failed to Load Schedule</h3><p>Make sure scheduleData.js is loaded correctly.</p></div>`;
         return;
@@ -118,7 +118,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     let currentMonth = selectedDate.getMonth();
     let currentYear = selectedDate.getFullYear();
-    
+
     function formatStrDate(dateObj) {
         const year = dateObj.getFullYear();
         const month = String(dateObj.getMonth() + 1).padStart(2, '0');
@@ -134,7 +134,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         calendarGrid.innerHTML = '';
         const firstDay = new Date(year, month, 1).getDay(); // 0 is Sunday
         const daysInMonth = new Date(year, month + 1, 0).getDate();
-        
+
         const monthNamesEn = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
         currentMonthYear.textContent = `${monthNamesEn[month]} ${year}`;
 
@@ -145,21 +145,21 @@ document.addEventListener('DOMContentLoaded', async () => {
         const matchedHitDates = [];
         const monthNamesShort = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
         const dayNamesShort = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-        
+
         for (let i = 0; i < firstDay; i++) {
             const emptyDiv = document.createElement('div');
             emptyDiv.className = 'cal-day empty';
             calendarGrid.appendChild(emptyDiv);
         }
-        
+
         for (let i = 1; i <= daysInMonth; i++) {
             const dayDiv = document.createElement('div');
             dayDiv.className = 'cal-day';
             dayDiv.textContent = i;
-            
+
             const cellDate = new Date(year, month, i);
             const strDate = formatStrDate(cellDate);
-            
+
             if (isToday(cellDate)) {
                 dayDiv.classList.add('today');
             }
@@ -168,7 +168,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
 
             const { status, classes } = getScheduleForDate(cellDate);
-            const dayIsOnline = status === "Online";
+            const dayIsOnline = status === "Online" || (classes || []).some(c => c.subject && c.subject.includes("Kreativitas dan Proyek Informatika"));
             const dayMatchesSearch = qActive
                 ? (classes || []).some(c =>
                     String(c.subject || '').toLowerCase().includes(q) ||
@@ -193,7 +193,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (agendas.some(a => a.date === strDate)) {
                 dayDiv.classList.add('has-event');
             }
-            
+
             dayDiv.addEventListener('click', () => {
                 selectedDate = new Date(year, month, i);
                 renderCalendar(currentMonth, currentYear);
@@ -239,10 +239,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
         }
     }
-    
+
     function getScheduleForDate(dateObj) {
         const strDate = formatStrDate(dateObj);
-        let status = "Offline"; 
+        let status = "Offline";
         let classes = [];
 
         const start = new Date(scheduleData.startDate + 'T00:00:00');
@@ -250,33 +250,33 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (dateObj < start || dateObj > end) {
             return { status: "No Semester", classes: [] };
         }
-        
+
         if (scheduleData.overrides && scheduleData.overrides[strDate]) {
             const override = scheduleData.overrides[strDate];
             status = override.status;
             classes = override.classes || [];
             return { status, classes };
         }
-        
+
         const engDays = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
         const dayName = engDays[dateObj.getDay()];
-        
+
         if (scheduleData.defaultWeekly && scheduleData.defaultWeekly[dayName]) {
             classes = scheduleData.defaultWeekly[dayName];
         }
-        
+
         return { status, classes };
     }
-    
+
     function updateScheduleView() {
         const strDate = formatStrDate(selectedDate);
         const dayEnNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
         const dayEn = dayEnNames[selectedDate.getDay()];
         const dateNum = selectedDate.getDate();
         const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-        
+
         selectedDateDisplay.textContent = `${dayEn}, ${monthNames[selectedDate.getMonth()]} ${dateNum}`;
-        
+
         if (isToday(selectedDate)) {
             scheduleTitle.textContent = "Today's Schedule";
             btnToday.classList.add('hidden');
@@ -284,9 +284,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             scheduleTitle.textContent = "Lecture Schedule";
             btnToday.classList.remove('hidden');
         }
-        
+
         const { status, classes } = getScheduleForDate(selectedDate);
-        
+
         if (status === "No Semester") {
             statusBanner.className = 'status-banner status-minggu-tenang';
             statusBanner.innerHTML = `<i class="ri-calendar-close-line"></i> Outside semester period. No classes scheduled.`;
@@ -307,18 +307,18 @@ document.addEventListener('DOMContentLoaded', async () => {
         } else {
             statusBanner.classList.add('hidden');
         }
-        
+
         scheduleList.innerHTML = '';
-        
+
         let mergedItems = [];
-        
+
         classes.forEach(c => mergedItems.push({ ...c, itemType: 'class' }));
-        
+
         const dateAgendas = getAgendas().filter(a => a.date === formatStrDate(selectedDate));
         dateAgendas.forEach(a => mergedItems.push({ ...a, itemType: 'event' }));
 
         const originalItemsCount = mergedItems.length;
-        
+
         mergedItems.sort((a, b) => {
             const timeA = (a.time) ? a.time.split(' ')[0] : '00:00';
             const timeB = (b.time) ? b.time.split(' ')[0] : '00:00';
@@ -366,13 +366,13 @@ document.addEventListener('DOMContentLoaded', async () => {
                 const randColorStr = colors[idx % colors.length];
                 const card = document.createElement('div');
                 card.className = `class-card ${randColorStr}`;
-                
+
                 if (item.itemType === 'class') {
                     const isOnline = status === "Online" || (item.subject && item.subject.includes("Kreativitas dan Proyek Informatika"));
                     const statClass = isOnline ? 'status-online' : 'status-offline';
                     const statText = isOnline ? 'Online Class' : 'Offline Class';
                     const icon = isOnline ? 'ri-macbook-line' : 'ri-book-2-line';
-                    
+
                     card.innerHTML = `
                         <div class="class-info">
                             <div class="class-icon"><i class="${icon}"></i></div>
@@ -400,7 +400,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                         </div>
                         <button class="delete-event-btn" data-id="${item.id}" title="Delete event"><i class="ri-close-line"></i></button>
                     `;
-                    
+
                     card.querySelector('.delete-event-btn').addEventListener('click', (e) => {
                         e.stopPropagation();
                         const id = parseInt(e.currentTarget.getAttribute('data-id'));
@@ -409,40 +409,40 @@ document.addEventListener('DOMContentLoaded', async () => {
                         updateScheduleView();
                     });
                 }
-                
+
                 scheduleList.appendChild(card);
             });
         }
     }
-    
+
     function getAgendas() {
         return JSON.parse(localStorage.getItem('jadwal_agenda') || '[]');
     }
-    
+
     function saveAgendas(agendas) {
         localStorage.setItem('jadwal_agenda', JSON.stringify(agendas));
         renderAgendas();
         renderCalendar(currentMonth, currentYear);
     }
-    
+
     function renderAgendas() {
         const rawAgendas = getAgendas();
         const selectedDateStr = formatStrDate(selectedDate);
-        
+
         const agendas = rawAgendas.filter(a => !a.date || a.date === selectedDateStr);
-        
+
         pinnedList.innerHTML = '';
-        
-        if(agendas.length === 0) {
+
+        if (agendas.length === 0) {
             pinnedList.innerHTML = '<p style="font-size:0.8rem; color:var(--text-muted); text-align:center; margin:15px auto;">No agenda yet</p>';
             return;
         }
-        
-        agendas.sort((a,b) => {
+
+        agendas.sort((a, b) => {
             const isASelected = a.date === formatStrDate(selectedDate);
             const isBSelected = b.date === formatStrDate(selectedDate);
-            if(isASelected && !isBSelected) return -1;
-            if(!isASelected && isBSelected) return 1;
+            if (isASelected && !isBSelected) return -1;
+            if (!isASelected && isBSelected) return 1;
             return b.id - a.id;
         });
 
@@ -450,11 +450,11 @@ document.addEventListener('DOMContentLoaded', async () => {
             let dateText = "Permanent Pin";
             if (agenda.date) {
                 const d = new Date(agenda.date);
-                dateText = `${d.getDate()}/${d.getMonth()+1}/${d.getFullYear()}`;
+                dateText = `${d.getDate()}/${d.getMonth() + 1}/${d.getFullYear()}`;
             }
-            
+
             const isSelectedDate = agenda.date === formatStrDate(selectedDate);
-            
+
             const card = document.createElement('div');
             card.className = 'agenda-card';
             card.innerHTML = `
@@ -466,13 +466,13 @@ document.addEventListener('DOMContentLoaded', async () => {
                 </div>
                 <button class="delete-btn" data-id="${agenda.id}" style="background:none; border:none; color:var(--text-muted); cursor:pointer;" title="Delete"><i class="ri-delete-bin-line"></i></button>
             `;
-            
+
             card.querySelector('.delete-btn').addEventListener('click', (e) => {
                 const id = parseInt(e.currentTarget.getAttribute('data-id'));
                 const filtered = getAgendas().filter(a => a.id !== id);
                 saveAgendas(filtered);
             });
-            
+
             pinnedList.appendChild(card);
         });
     }
@@ -481,27 +481,27 @@ document.addEventListener('DOMContentLoaded', async () => {
         agendaModal.classList.remove('hidden');
         document.getElementById('agenda-date').value = formatStrDate(selectedDate);
     }
-    
+
     function closeModalFunc() {
         agendaModal.classList.add('hidden');
         agendaForm.reset();
     }
 
     addAgendaBtn.addEventListener('click', openModal);
-    
+
     const addEventBtn = document.getElementById('add-event-btn');
     if (addEventBtn) {
         addEventBtn.addEventListener('click', openModal);
     }
 
     closeModal.addEventListener('click', closeModalFunc);
-    
+
     agendaForm.addEventListener('submit', (e) => {
         e.preventDefault();
         const title = document.getElementById('agenda-title').value;
         const date = document.getElementById('agenda-date').value;
         const time = document.getElementById('agenda-time').value;
-        
+
         const agendas = getAgendas();
         agendas.push({ title, date, time, id: Date.now() });
         saveAgendas(agendas);
@@ -517,7 +517,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
         renderCalendar(currentMonth, currentYear);
     });
-    
+
     nextMonthBtn.addEventListener('click', () => {
         currentMonth++;
         if (currentMonth > 11) {
@@ -526,7 +526,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
         renderCalendar(currentMonth, currentYear);
     });
-    
+
     prevDayBtn.addEventListener('click', () => {
         selectedDate.setDate(selectedDate.getDate() - 1);
         currentMonth = selectedDate.getMonth();
@@ -535,7 +535,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         updateScheduleView();
         renderAgendas();
     });
-    
+
     nextDayBtn.addEventListener('click', () => {
         selectedDate.setDate(selectedDate.getDate() + 1);
         currentMonth = selectedDate.getMonth();
@@ -544,7 +544,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         updateScheduleView();
         renderAgendas();
     });
-    
+
     btnToday.addEventListener('click', () => {
         selectedDate = new Date(today);
         currentMonth = selectedDate.getMonth();
