@@ -195,10 +195,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             const filterPass = (!onlineActive && !holidayActive) || typeMatch;
             const searchPass = !qActive || dayMatchesSearch;
-            
+
             if ((onlineActive || qActive || holidayActive) && filterPass && searchPass) {
                 let hitType = '';
-                
+
                 if (qActive && typeMatch) {
                     hitType = 'both'; // Matched search AND one of the type filters
                 } else if (typeMatchHoliday) {
@@ -251,7 +251,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                         btn.type = 'button';
                         btn.className = `filter-hits-pill is-${d.hitType}`;
                         btn.setAttribute('data-date', d.strDate);
-                        
+
                         let subText = 'Matched';
                         if (d.hitType === 'holiday') subText = 'Holiday';
                         else if (d.hitType === 'both') subText = 'Online + Match';
@@ -377,7 +377,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 if (item.itemType === 'event') return true;
                 const isOnline = status === "Online" || (item.subject && item.subject.includes("Kreativitas dan Proyek Informatika"));
                 const isHoliday = status === "Libur";
-                
+
                 return (onlineOnly && isOnline) || (holidayOnly && isHoliday);
             });
         }
@@ -388,7 +388,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     <div class="no-schedule">
                         <i class="ri-filter-off-line"></i>
                         <h3>No results</h3>
-                        <p>Try clearing your search or disabling "Online only".</p>
+                        <p>Try clearing your search or disabling "Online only" or "Holiday only".</p>
                     </div>
                 `;
             } else if (status !== 'Libur' && status !== 'Minggu Tenang') {
