@@ -338,7 +338,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (onlineOnly) {
             mergedItems = mergedItems.filter((item) => {
                 if (item.itemType === 'event') return true;
-                const isOnline = status === "Online";
+                const isOnline = status === "Online" || (item.subject && item.subject.includes("Kreativitas dan Proyek Informatika"));
                 return isOnline;
             });
         }
@@ -368,7 +368,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 card.className = `class-card ${randColorStr}`;
                 
                 if (item.itemType === 'class') {
-                    const isOnline = status === "Online";
+                    const isOnline = status === "Online" || (item.subject && item.subject.includes("Kreativitas dan Proyek Informatika"));
                     const statClass = isOnline ? 'status-online' : 'status-offline';
                     const statText = isOnline ? 'Online Class' : 'Offline Class';
                     const icon = isOnline ? 'ri-macbook-line' : 'ri-book-2-line';
