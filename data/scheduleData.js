@@ -25,7 +25,7 @@ const staticScheduleData = {
     "2026-09-14": { "status": "Offline", "classes": [{ "time": "17:45-20:50", "subject": "Pengembangan dan Operasi", "room": "B.T5/L5", "lecturer": "Gilbert Fernando Situmorang, S.Kom., M.Kom." }] },
     "2026-09-15": { "status": "Offline", "classes": [{ "time": "17:45-20:50", "subject": "Pembelajaran Mendalam", "room": "B.T5/L5", "lecturer": "Nurhayati, S.Kom., M.Kom." }] },
     "2026-09-16": { "status": "Offline", "classes": [{ "time": "17:45-19:05", "subject": "Pengembangan Karakter: Agama", "room": "B.T5/L5", "lecturer": "Suhutan P. Simanullang, S.Pd.K., M.Pd.K." }] },
-    "2026-09-17": { "status": "Holiday", "classes": [] },
+    "2026-09-17": { "status": "Libur", "classes": [] },
     "2026-09-19": { "status": "Self-study", "classes": [{ "time": "17:45-20:50", "subject": "Kreativitas dan Proyek Informatika", "room": "SFA (Study from Anywhere)", "lecturer": "Fandi Presly Simamora, S.Kom., M.Kom." }] },
     "2026-09-21": { "status": "Offline", "classes": [{ "time": "17:45-20:50", "subject": "Pengembangan dan Operasi", "room": "B.T5/L5", "lecturer": "Gilbert Fernando Situmorang, S.Kom., M.Kom." }] },
     "2026-09-22": { "status": "Offline", "classes": [{ "time": "17:45-20:50", "subject": "Pembelajaran Mendalam", "room": "B.T5/L5", "lecturer": "Nurhayati, S.Kom., M.Kom." }] },

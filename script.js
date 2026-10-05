@@ -46,6 +46,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     let searchQuery = '';
     let onlineOnly = false;
+    let holidayOnly = false;
 
     const calendarGrid = document.getElementById('calendar-grid');
     const currentMonthYear = document.getElementById('current-month-year');
@@ -61,6 +62,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const scheduleSearchInput = document.getElementById('schedule-search');
     const scheduleClearBtn = document.getElementById('schedule-clear-btn');
     const onlineOnlyCheckbox = document.getElementById('online-only');
+    const holidayOnlyCheckbox = document.getElementById('holiday-only');
 
     const filterHitsPanel = document.getElementById('filter-hits');
     const filterHitsPills = document.getElementById('filter-hits-pills');
@@ -80,6 +82,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     function syncScheduleControls() {
         if (scheduleClearBtn) scheduleClearBtn.classList.toggle('hidden', searchQuery.length === 0);
         if (onlineOnlyCheckbox) onlineOnly = !!onlineOnlyCheckbox.checked;
+        if (holidayOnlyCheckbox) holidayOnly = !!holidayOnlyCheckbox.checked;
     }
 
     if (scheduleSearchInput) {
@@ -103,6 +106,14 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     if (onlineOnlyCheckbox) {
         onlineOnlyCheckbox.addEventListener('change', () => {
+            syncScheduleControls();
+            renderCalendar(currentMonth, currentYear);
+            updateScheduleView();
+        });
+    }
+
+    if (holidayOnlyCheckbox) {
+        holidayOnlyCheckbox.addEventListener('change', () => {
             syncScheduleControls();
             renderCalendar(currentMonth, currentYear);
             updateScheduleView();
@@ -141,6 +152,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const q = (searchQuery || '').trim().toLowerCase();
         const qActive = q.length > 0;
         const onlineActive = !!onlineOnly;
+        const holidayActive = !!holidayOnly;
         const agendas = getAgendas();
         const matchedHitDates = [];
         const monthNamesShort = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -169,6 +181,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             const { status, classes } = getScheduleForDate(cellDate);
             const dayIsOnline = status === "Online" || (classes || []).some(c => c.subject && c.subject.includes("Kreativitas dan Proyek Informatika"));
+            const dayIsHoliday = status === "Libur";
             const dayMatchesSearch = qActive
                 ? (classes || []).some(c =>
                     String(c.subject || '').toLowerCase().includes(q) ||
@@ -177,15 +190,18 @@ document.addEventListener('DOMContentLoaded', async () => {
                 : false;
 
             const onlineOk = !onlineActive || dayIsOnline;
+            const holidayOk = !holidayActive || dayIsHoliday;
             const searchOk = !qActive || dayMatchesSearch;
-            if ((onlineActive || qActive) && onlineOk && searchOk) {
-                if (onlineActive && qActive) dayDiv.classList.add('hit-both');
+            
+            if ((onlineActive || qActive || holidayActive) && onlineOk && holidayOk && searchOk) {
+                if (holidayActive) dayDiv.classList.add('hit-holiday');
+                else if (onlineActive && qActive) dayDiv.classList.add('hit-both');
                 else if (onlineActive) dayDiv.classList.add('hit-online');
                 else dayDiv.classList.add('hit-search');
 
                 matchedHitDates.push({
                     strDate,
-                    hitType: onlineActive && qActive ? 'both' : (onlineActive ? 'online' : 'search'),
+                    hitType: holidayActive ? 'holiday' : (onlineActive && qActive ? 'both' : (onlineActive ? 'online' : 'search')),
                     dayText: `${dayNamesShort[cellDate.getDay()]} ${monthNamesShort[cellDate.getMonth()]} ${cellDate.getDate()}`
                 });
             }
@@ -204,7 +220,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         if (filterHitsPanel && filterHitsPills) {
-            if (onlineActive || qActive) {
+            if (onlineActive || qActive || holidayActive) {
                 filterHitsPanel.classList.remove('hidden');
                 filterHitsPills.innerHTML = '';
 
@@ -220,7 +236,13 @@ document.addEventListener('DOMContentLoaded', async () => {
                         btn.type = 'button';
                         btn.className = `filter-hits-pill is-${d.hitType}`;
                         btn.setAttribute('data-date', d.strDate);
-                        btn.innerHTML = `${d.dayText}<span class="pill-sub">${d.hitType === 'both' ? 'Online + Match' : d.hitType === 'online' ? 'Online' : 'Matched'}</span>`;
+                        
+                        let subText = 'Matched';
+                        if (d.hitType === 'holiday') subText = 'Holiday';
+                        else if (d.hitType === 'both') subText = 'Online + Match';
+                        else if (d.hitType === 'online') subText = 'Online';
+
+                        btn.innerHTML = `${d.dayText}<span class="pill-sub">${subText}</span>`;
                         btn.addEventListener('click', () => {
                             const [yy, mm, dd] = d.strDate.split('-').map((x) => parseInt(x, 10));
                             selectedDate = new Date(yy, mm - 1, dd);
@@ -340,6 +362,13 @@ document.addEventListener('DOMContentLoaded', async () => {
                 if (item.itemType === 'event') return true;
                 const isOnline = status === "Online" || (item.subject && item.subject.includes("Kreativitas dan Proyek Informatika"));
                 return isOnline;
+            });
+        }
+
+        if (holidayOnly) {
+            mergedItems = mergedItems.filter((item) => {
+                if (item.itemType === 'event') return true;
+                return status === "Libur";
             });
         }
 

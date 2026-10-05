@@ -542,6 +542,11 @@ body::after {
     background: linear-gradient(135deg, rgba(47, 128, 255, 0.16), rgba(106, 183, 255, 0.12));
 }
 
+.cal-day.hit-holiday {
+    background-color: rgba(255, 59, 48, 0.12);
+}
+
+.cal-day.hit-holiday::before,
 .cal-day.hit-online::before,
 .cal-day.hit-search::before,
 .cal-day.hit-both::before {
@@ -561,6 +566,11 @@ body::after {
     background: var(--yellow);
 }
 
+.cal-day.hit-holiday::before {
+    background: #ff3b30;
+    box-shadow: 0 0 0 3px rgba(255, 59, 48, 0.2);
+}
+
 .cal-day.hit-search::before {
     background: var(--yellow-mid);
 }
@@ -569,6 +579,7 @@ body::after {
     background: linear-gradient(135deg, var(--yellow), var(--accent-red));
 }
 
+.cal-day.selected.hit-holiday,
 .cal-day.selected.hit-online,
 .cal-day.selected.hit-search,
 .cal-day.selected.hit-both {
@@ -949,6 +960,10 @@ html[data-theme="light"] body::after {
 
 .filter-hits-pill.is-search {
     border-color: rgba(106, 183, 255, 0.55);
+}
+
+.filter-hits-pill.is-holiday {
+    border-color: rgba(255, 59, 48, 0.55);
 }
 
 .filter-hits-pill.is-both {
