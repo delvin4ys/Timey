@@ -189,19 +189,34 @@ document.addEventListener('DOMContentLoaded', async () => {
                 )
                 : false;
 
-            const onlineOk = !onlineActive || dayIsOnline;
-            const holidayOk = !holidayActive || dayIsHoliday;
-            const searchOk = !qActive || dayMatchesSearch;
+            const typeMatchOnline = onlineActive && dayIsOnline;
+            const typeMatchHoliday = holidayActive && dayIsHoliday;
+            const typeMatch = typeMatchOnline || typeMatchHoliday;
+
+            const filterPass = (!onlineActive && !holidayActive) || typeMatch;
+            const searchPass = !qActive || dayMatchesSearch;
             
-            if ((onlineActive || qActive || holidayActive) && onlineOk && holidayOk && searchOk) {
-                if (holidayActive) dayDiv.classList.add('hit-holiday');
-                else if (onlineActive && qActive) dayDiv.classList.add('hit-both');
-                else if (onlineActive) dayDiv.classList.add('hit-online');
+            if ((onlineActive || qActive || holidayActive) && filterPass && searchPass) {
+                let hitType = '';
+                
+                if (qActive && typeMatch) {
+                    hitType = 'both'; // Matched search AND one of the type filters
+                } else if (typeMatchHoliday) {
+                    hitType = 'holiday';
+                } else if (typeMatchOnline) {
+                    hitType = 'online';
+                } else {
+                    hitType = 'search';
+                }
+
+                if (hitType === 'holiday') dayDiv.classList.add('hit-holiday');
+                else if (hitType === 'both') dayDiv.classList.add('hit-both');
+                else if (hitType === 'online') dayDiv.classList.add('hit-online');
                 else dayDiv.classList.add('hit-search');
 
                 matchedHitDates.push({
                     strDate,
-                    hitType: holidayActive ? 'holiday' : (onlineActive && qActive ? 'both' : (onlineActive ? 'online' : 'search')),
+                    hitType,
                     dayText: `${dayNamesShort[cellDate.getDay()]} ${monthNamesShort[cellDate.getMonth()]} ${cellDate.getDate()}`
                 });
             }
@@ -357,18 +372,13 @@ document.addEventListener('DOMContentLoaded', async () => {
             });
         }
 
-        if (onlineOnly) {
+        if (onlineOnly || holidayOnly) {
             mergedItems = mergedItems.filter((item) => {
                 if (item.itemType === 'event') return true;
                 const isOnline = status === "Online" || (item.subject && item.subject.includes("Kreativitas dan Proyek Informatika"));
-                return isOnline;
-            });
-        }
-
-        if (holidayOnly) {
-            mergedItems = mergedItems.filter((item) => {
-                if (item.itemType === 'event') return true;
-                return status === "Libur";
+                const isHoliday = status === "Libur";
+                
+                return (onlineOnly && isOnline) || (holidayOnly && isHoliday);
             });
         }
 
